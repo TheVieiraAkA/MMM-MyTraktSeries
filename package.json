@@ -1,0 +1,22 @@
+{
+  "name": "MMM-trakt",
+  "version": "0.3.0",
+  "description": "[MagicMirror Project on Github](https://github.com/MichMich/MagicMirror/)",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kiina/MMM-trakt.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kiina/MMM-trakt/issues"
+  },
+  "homepage": "https://github.com/Kiina/MMM-trakt#readme",
+  "dependencies": {
+    "trakt.tv": "^6.0.2",
+    "trakt.tv-images": "^5.1.1"
+  }
+}
