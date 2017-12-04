@@ -3,8 +3,7 @@ _This was inspired by MMM-Trakt https://github.com/Kiina/MMM-trakt, i just upgra
 
 ### Preview
 
-https://lh5.googleusercontent.com/VBY11Gw02sFVOQAeofu3r9HlaStmOaIt9Mt1S3o0bzOPyViHOST6ne47CaTrnFYzNEsbZCTEKGvzKcWaXB9c=w1072-h929
-![alt text](https://raw.githubusercontent.com/
+![alt text](https://raw.githubusercontent.com/TheVieiraAkA/MMM-MyTraktSeries/blob/master/preview.png)
 
 
 ### Todo
