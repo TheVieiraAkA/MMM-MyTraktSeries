@@ -33,7 +33,6 @@ module.exports = NodeHelper.create({
 
         importoldtoken().catch(function () {
             return trakt.get_codes().then(function (poll) {
-                console.log('Trakt Access Code: ' + poll.user_code);
                 self.sendSocketNotification("OAuth", {
                     code: poll.user_code
                 });
@@ -51,29 +50,31 @@ module.exports = NodeHelper.create({
                 //console.log(importtoken);
                 //console.log(trakt);
 
-                trakt.users.list.items.get({
+                /*  GET the list of shows from the custom list  */
+                trakt.users.list.items.get({ 
                     username: username,
                     id: id_lista,
                     type: type
-                }).then(data => {
+                }).then(SeriesList => {
 
-                    var series = [];
-                    for (let h = 0; h < data.length; h++) {
+                    var Episodes = [];
+                    for (let tvShow = 0; tvShow < SeriesList.length; tvShow++) {
+
+                        /*  GET INFO for every TV show from the list)  */
+
                         trakt.shows.progress.watched({
-                            id: data[h].show.ids.slug
+                            id: SeriesList[tvShow].show.ids.slug
 
                         }).then(info => {
-                            var diff = (info.aired - info.completed);
+                            var diff = (info.aired - info.completed); // progress from the episode 
 
                             if (diff != 0) {
-                                series.push({nome: data[h].show.title, dif: diff, nextEp: info.next_episode.title});
-
+                                Episodes.push({nome: SeriesList[tvShow].show.title, dif: diff, nextEp: info.next_episode.title});
                             } else {
-                                series.push({nome: data[h].show.title, dif: diff, nextEp: ""});
+                                Episodes.push({nome: SeriesList[tvShow].show.title, dif: diff, nextEp: ""});
                             }
-
                             self.sendSocketNotification("UNWATCHED", {
-                                eps: series
+                                eps: Episodes
                             });
 
                         }).catch(err => console.log(err));

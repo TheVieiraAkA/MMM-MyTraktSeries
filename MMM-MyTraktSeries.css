@@ -1,27 +1,38 @@
 
+/*
+    Title of the table header
+*/
 th {
     font-size: 20px !important;
     color: rgb(41, 192, 255) !important;
     padding-bottom: 5px;
 }
-
+/*
+    Rows of the table content
+*/
 td {
     margin-left: 10px;
     font-size: 20px;
     line-height: 25px;
 }
-
+/*
+    LEFT COLUMN of the table content
+*/
 .ColLeft {
     text-align: left;
     font-size: 21px;
     color: #fff;
 }
-
+/*
+    CENTER COLUMN of the table content
+*/
 .ColCenter {
     text-align: center;
     color: rgba(255, 255, 255, 0.87);
 }
-
+/*
+    RIGHT COLUMN of the table content
+*/
 .ColRight {
     text-align: right;
 }
