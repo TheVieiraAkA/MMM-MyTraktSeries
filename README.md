@@ -1,5 +1,10 @@
 # [Trakt.tv]-Module for the [MagicMirror](https://github.com/MichMich/MagicMirror/)
-_This was inspired by MMM-Trakt https://github.com/Kiina/MMM-trakt, i just upgraded for my personal use, all credits to him
+_This was inspired by MMM-Trakt github.com/Kiina/MMM-trakt, i just upgraded for my personal use, all credits to him
+
+### LINK TO GITHUB
+
+
+[MMM-MyTraktSeries](https://github.com/TheVieiraAkA/MMM-MyTraktSeries)    
 
 ### Preview
 
@@ -14,7 +19,7 @@ _This was inspired by MMM-Trakt https://github.com/Kiina/MMM-trakt, i just upgra
 
 ### Creating a [Trakt.tv] API [application]
 
-To get your API keys you need to first create an [application]. Give it a name, and enter `http://localhost/` in the callback field _(it's a required field but not used for our purpose)_.
+To get your API keys you need to first create an [Application](https://trakt.tv/oauth/applications). Give it a name, and enter `http://localhost/` in the `Redirect uri:` field and and `Javascript (cors) origins:` _(it's a required field but not used for our purpose)_.
 
 
 ## Installation
@@ -53,7 +58,7 @@ To run the module, you need to add the following data to your ` ~/MagicMirror/co
 
 | Option            | Description
 | ----------------- | -----------
-| `id_lista`        | To get the id_list you need to go to[This Link](https://trakt.docs.apiary.io/#reference/users/lists/get-a-user's-custom-lists?console=1), using the username and client_id in the UI Parameters and Headers, and in the Response, search for the List "ids" and then "trakt" value.
+| `id_lista`        | To get the id_list you need to go to [This Link](https://trakt.docs.apiary.io/#reference/users/lists/get-a-user's-custom-lists?console=1), using the username in the `URI Parameters` and client_id in the `Headers`, and in the Response, search for the List "ids" and then "trakt" value.
 
 
 
