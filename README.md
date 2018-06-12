@@ -46,7 +46,6 @@ To run the module, you need to add the following data to your ` ~/MagicMirror/co
         config: {
             client_id: "private_id",
             client_secret: "secret_id",
-            days: 2,
             username: 'username',
             id_lista: "idlist",     // Example: "1234567"
             type: "shows" 

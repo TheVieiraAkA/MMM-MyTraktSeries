@@ -10,7 +10,7 @@ module.exports = NodeHelper.create({
         this.fetchers = [];
         console.log("Starting node helper for: " + this.name);
     },
-    createFetcher: function (client_id, client_secret, days, username, id_lista, type) {
+    createFetcher: function (client_id, client_secret, username, id_lista, type) {
         var self = this;
         let options = {
             client_id: client_id,
@@ -19,7 +19,6 @@ module.exports = NodeHelper.create({
             api_url: null,
         };
         const trakt = new Trakt(options);
-
         function importoldtoken() {
             return new Promise(function (fulfill, reject) {
                 try {
@@ -30,13 +29,14 @@ module.exports = NodeHelper.create({
                 }
             });
         }
-
         importoldtoken().catch(function () {
             return trakt.get_codes().then(function (poll) {
                 self.sendSocketNotification("OAuth", {
                     code: poll.user_code
                 });
                 return trakt.poll_access(poll);
+            }).catch(error => {
+                console.log(error.message);
             }).then(function () {
                 importtoken = trakt.export_token();
                 fs.writeFile("./modules/MMM-MyTraktSeries/token.json", JSON.stringify(importtoken), "utf8", function (err, data) {
@@ -51,7 +51,7 @@ module.exports = NodeHelper.create({
                 //console.log(trakt);
 
                 /*  GET the list of shows from the custom list  */
-                trakt.users.list.items.get({ 
+                trakt.users.list.items.get({
                     username: username,
                     id: id_lista,
                     type: type
@@ -66,21 +66,29 @@ module.exports = NodeHelper.create({
                             id: SeriesList[tvShow].show.ids.slug
 
                         }).then(info => {
-                            var diff = (info.aired - info.completed); // progress from the episode 
 
-                            if (diff != 0) {
-                                Episodes.push({nome: SeriesList[tvShow].show.title, dif: diff, nextEp: info.next_episode.title});
-                            } else {
-                                Episodes.push({nome: SeriesList[tvShow].show.title, dif: diff, nextEp: ""});
+                            var diff = (info.aired - info.completed); // progress if the TV Show
+
+                            if(diff > 0){ 
+                                var name = ""
+
+                                /*  If there is no name assign, the name will be "Episode number XX" being the XX the number of the episode  */
+
+                                SeriesList[tvShow].show.title ? name = info.next_episode.title : name = "Episódio Número " + info.next_episode.number
+                                
+                                Episodes.push({
+                                    nome : SeriesList[tvShow].show.title, 
+                                    dif: diff, 
+                                    nextEp: name
+                                });
+                                
                             }
                             self.sendSocketNotification("UNWATCHED", {
                                 eps: Episodes
                             });
-
-                        }).catch(err => console.log(err));
-                    }
-                });
-            });
+                        }).catch(error => console.log("trakt. error get episodes from series \n\n " + error)) }
+                }).catch(error => console.log("trakt. error get series list \n\n " + error))
+            }).catch(error => console.log("trakt. error import token \n\n" + error))
         });
     },
     socketNotificationReceived: function (notification, payload) {
@@ -88,11 +96,10 @@ module.exports = NodeHelper.create({
             this.createFetcher(
                 payload.client_id,
                 payload.client_secret,
-                payload.days,
                 payload.username,
                 payload.id_lista,
                 payload.type
-            );
+                );
         }
     }
 });

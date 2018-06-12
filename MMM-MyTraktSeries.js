@@ -2,9 +2,7 @@
 
 Module.register("MMM-MyTraktSeries", {
     defaults: {
-        updateInterval: 20 * 60 * 1000, //every 20 minutes
-        initialLoadDelay: 0,
-        days: 1
+        initialLoadDelay: 0
     },
     getTranslations() {
         return {
@@ -15,7 +13,7 @@ Module.register("MMM-MyTraktSeries", {
         };
     },
     getStyles: function () {
-        return ["MMM-Trakt.css"];
+        return ["MMM-MyTraktSeries.css"];
     },
     getScripts: function () {
         return ["moment.js"];
@@ -24,17 +22,19 @@ Module.register("MMM-MyTraktSeries", {
         Log.info("Starting module: " + this.name);
         moment.locale(config.language);
         this.traktData = {};
-        this.traktCode;
+        this.traktCode = "";
         this.dados = [];
         this.try = 0;
         this.loaded = false;
-        this.firstTime= true;
+        this.primeiravez= true;
         this.scheduleUpdate(0);
     },
     getDom: function () {
-        if (Object.keys(this.SeriesData).length === 0) {
+        if (Object.keys(this.dados).length === 0) {
             var wrapper = document.createElement("div");
-            wrapper.innerHTML = "Please enter the following on https://trakt.tv/activate: " + this.traktCode;
+
+            this.traktCode != "" ? wrapper.innerHTML = "https://trakt.tv/activate: " + this.traktCode : wrapper.innerHTML = "   LOADING........";
+            
             wrapper.className = "small";
         } else {
             var wrapper = document.createElement("table");
@@ -69,8 +69,9 @@ Module.register("MMM-MyTraktSeries", {
     shorten: function (string, maxLength) {
         if (string.length > maxLength) {
             return string.slice(0, maxLength) + "&hellip;";
+        }else{
+            return string;
         }
-        return string;
     },
     updateTrakt: function () {
         if (this.config.client_id === "") {
@@ -84,7 +85,6 @@ Module.register("MMM-MyTraktSeries", {
         this.sendSocketNotification("PULL", {
             client_id: this.config.client_id,
             client_secret: this.config.client_secret,
-            days: this.config.days,
             username: this.config.username,
             id_lista: this.config.id_lista,
             type: this.config.type
@@ -92,8 +92,12 @@ Module.register("MMM-MyTraktSeries", {
         this.scheduleUpdate(0);
     },
     socketNotificationReceived: function (notification, payload) {
+        if (notification === "SHOWS") {
+            this.traktData = payload.shows;
+            this.updateDom();
+        }
         if (notification === "UNWATCHED") {
-            this.SeriesData = payload.eps;
+            this.dados = payload.eps;
             this.updateDom();
         }
         if (notification === "OAuth") {
@@ -102,15 +106,20 @@ Module.register("MMM-MyTraktSeries", {
         }
     },
     scheduleUpdate: function (delay) {
+        
         var self = this;
+
+        if(this.primeiravez){
+            setTimeout(function () { self.updateTrakt(); }, 5000);
+            this.primeiravez = false;
+        }
         var nextLoad = 0;
 
-        if(this.firstTime){
-            setTimeout(function () { self.updateTrakt(); }, 5000);
-            this.firstTime = false;
-        }
-        !this.firstTime && this.dados.length == 0 ? nextLoad = 5 * 1000 : nextLoad = 20 * 60 * 1000
-        setTimeout(function () { self.updateTrakt(); }, nextLoad);
+        this.traktCode != "" ? nextLoad = 150 * 1000 : !this.primeiravez && this.dados.length == 0 ? nextLoad = 5 * 1000 : nextLoad = 10 * 60 * 1000
+
+        setTimeout(function () {
+            self.updateTrakt();
+        }, nextLoad);
 
     }
 });
